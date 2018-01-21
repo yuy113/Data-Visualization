@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<style>
+
+.panel {
+    stroke: black;
+    fill: white;
+}
+
+.bg {
+    fill: white;
+}
+
+.link {
+    stroke: silver;
+    stroke-opacity: 0.05
+}
+
+.dot {
+    fill-opacity: 0.5;
+}
+
+.label-node {
+    fill: silver;
+}
+
+.active {
+    stroke: black;
+}
+
+.label {
+    fill: gray;
+    pointer-events: none;
+}
+
+#tooltip {
+    font-size: 12px;
+    margin-top: 22px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+}
+
+#tooltip h1 {
+    font-size: 14px;
+    margin: 0;
+}
+</style>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://rawgit.com/biovisualize/radviz/master/radviz-min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  <div align="left"><h1 style="h1">RadViz Visualization for 20 components with sparse Principal Component Analysis(sPCA)</h1></div>
+ <div align="left"><h3  style="color:blue;h3">Classification Groups-Diseased: Patients with Cardiovascular Disease; Healthy: Healthy Subjects</h3></div>
+  <div class="container"></div>
+  <div id="tooltip"></div>
+  <script>
+    var dimensions = ["sPCA_Component1",  "sPCA_Component2" , "sPCA_Component3" , "sPCA_Component4" ,
+    "sPCA_Component5"  ,"sPCA_Component6" , "sPCA_Component7" , "sPCA_Component8"  ,
+    "sPCA_Component9" , "sPCA_Component10",  "sPCA_Component11",  "sPCA_Component12" , 
+      "sPCA_Component13" , "sPCA_Component14",  "sPCA_Component15",  "sPCA_Component16" ,  
+        "sPCA_Component17" , "sPCA_Component18",  "sPCA_Component19",  "sPCA_Component20" ];
+ 
+    
+    var radviz = radvizComponent()
+        .config({
+            el: document.querySelector('.container'),
+            colorAccessor: function(d){ return d['Disease_group']; },
+            dimensions: dimensions,
+            size: 700,
+            margin: 150,
+            useRepulsion: true,
+            drawLinks: true,
+            tooltipFormatter: function(d){
+                return '<h1>' + d.Disease_group 
+                  + '</h1>' +dimensions.map(function(dB){
+                  return dB + ': ' + parseFloat(d[dB]); }).join('<br />');
+            }
+        });
+
+    d3.csv('sPCA_20components_diseasegroup.csv', function(error, data){
+        console.log(data);
+        radviz.render(data);
+    });
+  </script>
+   <div id="annotate">
+        <p> Generally two groups-diseased and healthy didn't separated well based on first 20 principal components from sparse Principal Component Analysis(sPCA) method between 406 scaled metabolite features and diseased labels.<br> It appears that component 5,6 from sPCA and some others are slightly more related with diseased group and component 13,14 from sPCA are more closely related with healthy group.<br> </p>
+      </div> 
+</body>
+</html>

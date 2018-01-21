@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<style>
+
+.panel {
+    stroke: black;
+    fill: white;
+}
+
+.bg {
+    fill: white;
+}
+
+.link {
+    stroke: silver;
+    stroke-opacity: 0.05
+}
+
+.dot {
+    fill-opacity: 0.5;
+}
+
+.label-node {
+    fill: silver;
+}
+
+.active {
+    stroke: black;
+}
+
+.label {
+    fill: gray;
+    pointer-events: none;
+}
+
+#tooltip {
+    font-size: 12px;
+    margin-top: 22px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+}
+
+#tooltip h1 {
+    font-size: 14px;
+    margin: 0;
+}
+</style>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://rawgit.com/biovisualize/radviz/master/radviz-min.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  <div align="left"><h1 style="h1">RadViz Visualization for 20 Metabolite features with lowest paired t test P values</h1></div>
+  <div align="left"><h3  style="color:blue;h3">Classification Groups-Diseased: Patients with Cardiovascular Disease; Healthy: Healthy Subjects</h3></div>
+  <div class="container"></div>
+  <div id="tooltip"></div>
+  <script>
+    var dimensions = ["Metabolite322" , "Metabolite28" ,          "Metabolite117"  ,        "Metabolite132",          "Metabolite70" , "Metabolite169"  ,        "Metabolite215" ,         "Metabolite92" ,          "Metabolite203",          "Metabolite29","Metabolite80",  "Metabolite85",  "Metabolite213", "Metabolite91" , "Metabolite356",
+    "Metabolite128" ,"Metabolite374" ,"Metabolite367" ,"Metabolite107" ,"Metabolite171" ];
+    var var1="Metabolite322";
+    var var2 = "Metabolite28";
+    var var3=  "Metabolite117";
+    var var4="Metabolite132";
+    var var5="Metabolite70";
+    var var6="Metabolite169" ; 
+    var var7="Metabolite215";
+    var var8="Metabolite92";
+    var var9="Metabolite203";
+    var var10= "Metabolite29";
+    var var11='Disease_group';
+    
+    var radviz = radvizComponent()
+        .config({
+            el: document.querySelector('.container'),
+            colorAccessor: function(d){ return d['Disease_group']; },
+            dimensions: dimensions,
+            size: 500,
+            margin: 100,
+            useRepulsion: true,
+            drawLinks: true,
+            tooltipFormatter: function(d){
+                return '<h1>' + d.Disease_group 
+                  + '</h1>' +dimensions.map(function(dB){
+                  return dB + ': ' + parseFloat(d[dB]); }).join('<br />');
+            }
+        });
+
+    d3.csv('feature_20lowestpvalue_diseasegroup.csv', function(error, data){
+        console.log(data);
+        radviz.render(data);
+    });
+  </script>
+  <div id="annotate">
+        <p> Generally two groups-diseased and healthy didn't separated well based on these 20 metabolite features with lowest paired t test p values.<br> It appears that Metabolite29 and Metabolite85 and some others on left panel of RadViz are slightly more related with diseased group and metabolite374 and other metabolite features on right panel of Radviz plot are more closely related with healthy group.<br> </p>
+      </div> 
+    </div>
+</body>

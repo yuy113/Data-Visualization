@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>CS590DV Interactive PCA Demo</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="https://dc-js.github.io/dc.js/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://dc-js.github.io/dc.js/css/dc.css" />
+  <link rel="stylesheet" type="text/css" href="template.css" />
+  <script src="https://dc-js.github.io/dc.js/js/d3.js"></script>
+  <script src="https://dc-js.github.io/dc.js/js/crossfilter.js"></script>
+  <script src="https://dc-js.github.io/dc.js/js/dc.js"></script>
+  <script src="https://www.lactame.com/lib/ml/2.0.0/ml.min.js"></script>
+
+
+</head>
+<style> .dc-chart g.row text {fill: black;} 
+    #ch1{
+      width:425;
+      height:415px;
+      margin: 1%;
+      padding:0;
+      border:0;
+      align:center;
+      float:left;
+    }
+    #ch2{
+      width:425px;
+      height:415px;
+      margin: 1%;
+      padding:0;
+      border:0;
+      float:left;    
+    }
+    #opt {
+      width: 8em;
+      font-size: 10px;
+      margin: 2px;
+      padding: 0px;
+    }
+    #sec {
+      width: 40%;
+      height:60px;
+      float:left;
+      font-size: 10px;
+    }
+    #annotate{
+      width:100%;
+      font-size:10px;
+      color:black ;
+      overflow:scroll; 
+      height:120px
+    }
+    h1{
+      align:center;
+      color:crimson;
+    }
+    h2{
+      align:center;
+      color:crimson;
+    }
+    h5{
+      font-size: 10px;
+      margin: 2px;
+      padding: 0px;      
+    }  
+    .dropdown {
+      border: 1px solid #ccc;
+      width: 10em;
+      font-size: 10px;
+      border-radius: 3px;
+      overflow: visible;
+    }
+    input{
+      width: 4.5em;
+      font-size: 10px;
+    }
+    .form{
+      width:10%;
+    }
+  </style>
+<body>
+<div class="container">
+  <div align="center"><h1 style="h1">Interactive PCA with 10 metabolite features with lowest paired t test P values</h1>
+  </div>
+    <div id="ch2">
+      <div align="center" ><h2>Selection-Enabled Row Chart</h2></div>
+      <div align="center" id="row" style="margin-bottom:20px"></div>
+  </div> 
+
+      <br><br>
+      <div align="center" ><h2>Features to Include in the PCA</h2></div>     
+      <table align="center">
+        <tr>
+          <td><input class="pcaDimensions" type="checkbox" onchange="draw_graphs(false)" value="Metabolite322"  checked="true">&nbspMetabolite322<br></td>
+          <td><input class="pcaDimensions" type="checkbox" onchange="draw_graphs(false)" value="Metabolite28" checked="true">&nbspMetabolite28<br></td>
+        </tr><tr> 
+          <td><input class="pcaDimensions" type="checkbox" onchange="draw_graphs(false)" value="Metabolite117">&nbspMetabolite117<br></td>
+          <td><input class="pcaDimensions" type="checkbox" onchange="draw_graphs(false)" value="Metabolite132">&nbspMetabolite132<br></td>
+        </tr><tr> 
+          <td><input class="pcaDimensions" type="checkbox" onchange="draw_graphs(false)" value="Metabolite70">&nbspMetabolite70<br></td>
+          <td><input class="pcaDimensions" type="checkbox" onchange="draw_graphs(false)" value="Metabolite169">&nbspMetabolite169<br></td>
+        </tr><tr> 
+          <td><input class="pcaDimensions" type="checkbox" onchange="draw_graphs(false)" value="Metabolite215">&nbspMetabolite215<br></td>
+          <td><input class="pcaDimensions" type="checkbox" onchange="draw_graphs(false)" value="Metabolite92">&nbspMetabolite92<br></td>
+        </tr><tr> 
+          <td><input class="pcaDimensions" type="checkbox" onchange="draw_graphs(false)" value="Metabolite203">&nbspMetabolite203<br></td>
+          <td><input class="pcaDimensions" type="checkbox" onchange="draw_graphs(false)" value="Metabolite29">&nbspMetabolite29<br></td>
+        </tr>
+      </table>
+
+     
+  
+     
+    </div> 
+
+
+  <script type="text/javascript">    
+    var var1="Metabolite322";
+    var var2 = "Metabolite28";
+    var var3=  "Metabolite117";
+    var var4="Metabolite132";
+    var var5="Metabolite70";
+    var var6="Metabolite169" ; 
+    var var7="Metabolite215";
+    var var8="Metabolite92";
+    var var9="Metabolite203";
+    var var10= "Metabolite29";
+    var var11='Disease_group';
+    
+    // Define the charts globally so that they don't get redefined across multiple calls to draw_graphs() 
+    var scatterplot = dc.scatterPlot("#scatter"),
+        rowChart    = dc.rowChart("#row");  
+
+    // A helper function to get the list of attributes that should be included in the PCA
+    function getPCACheckboxValues(){         
+      var pcaDimensionCheckboxes=document.getElementsByClassName("pcaDimensions"),
+          pcaDimensions=[];
+      for(var i=0; i<pcaDimensionCheckboxes.length; i++){
+        if(pcaDimensionCheckboxes[i].checked){
+          pcaDimensions.push(pcaDimensionCheckboxes[i].value);
+        }
+      }
+      return pcaDimensions;
+    }
+
+    // Functions to access the quantities needed to update the PCA scatterplot
+    function pcaAccessor(d){return [d.pcaCoords.c1, d.pcaCoords.c2, d.recId];};
+    function pcaAccessorC1(d){return d.pcaCoords.c1;};
+    function pcaAccessorC2(d){return d.pcaCoords.c2;};
+
+
+    // Function that acts as a callback for checkboxes and is used to initialize the page
+    function draw_graphs(redrawAll){
+      /* Load the data. */
+      d3.csv("feature_10lowestpvalue_diseasegroup.csv", function(dataset) {
+        dataset.forEach(function(d,i) {
+          d[var1]=+d[var1];
+          d[var2]=+d[var2];
+          d[var3]=+d[var3];
+          d[var4]=+d[var4];
+          d[var5]=+d[var5];
+          d[var6]=+d[var6];
+          d[var7]=+d[var7];
+          d[var8]=+d[var8];
+          d[var9]=+d[var9];
+          d[var10]=+d[var10];
+         /* d[var11]=+d[var11];
+          d[var12]=+d[var12];
+          d[var13]=+d[var13];
+          d[var14]=+d[var14];
+          d[var15]=+d[var15];
+          d[var16]=+d[var16];
+          d[var17]=+d[var17];
+          d[var18]=+d[var18];*/
+          /* Here we're creating a placeholder for the PCA coordinate values. We also need to create a record 
+             ID so that when we have the filtered data, we can know which records to update in the full dataset. 
+             Later, we'll have a callback that will change the values of c1 and c2, replacing them with the 
+             actual PCA components. */
+          d.pcaCoords={c1:0,c2:0};
+          d.recId=i;
+        });
+    
+        // Create a crossfilter index
+        var ndx = crossfilter(dataset);
+
+        /* Create a dimension that groups by (c1,c2,recID), which ensures that every record has a unique group.
+           Then, we create the scatterplot, which we'll modify in the callback functions. */
+        var pcaDim=ndx.dimension(pcaAccessor),
+            pcaGroup=pcaDim.group();
+        scatterplot
+          .dimension(pcaDim).group(pcaGroup)
+          .x(d3.scale.linear().domain([1.1*d3.min(dataset,pcaAccessorC1), 1.1*d3.max(dataset,pcaAccessorC1)]))
+          .y(d3.scale.linear().domain([1.1*d3.min(dataset,pcaAccessorC2), 1.1*d3.max(dataset,pcaAccessorC2)]))
+          .xAxisLabel("First Principal Component")
+          .yAxisLabel("Second Principal Component")
+          .width(550).height(550)
+          .clipPadding(10)
+          .excludedOpacity(0.5)
+
+        /* This is the callback to recompute the PCA in response to changes in the filter/checkboxes. Every chart 
+           that can update the crossfilter must either A) specify this function as the callback for the "filtered"
+           event, or B) use a callback function that subsequently calls this function. Otherwise, the PCA will not 
+           be recomputed on the newly filtered data. */
+        function update_pca_coords() {
+          /* Retrieve the list of attributes that should be included in the PCA. */
+          var pcaDimensions = getPCACheckboxValues();
+          /* Get the data that satisfies the current filters. Then, create a PCA object and use it to transform the
+             data by representing it on the principal components (this is done using pcaObject.predict()).  */
+          var filteredData = pcaDim.top(Infinity),
+              pcaData      = filteredData.map(function(d){return pcaDimensions.map(function(e){ return d[e];});}),
+              pcaRecIDs    = filteredData.map(function(d){return d.recId;}),
+              pcaObject    = new ML.Stat.PCA(pcaData, {}),
+              pcaProjData  = pcaObject.predict(pcaData);
+          /* For each record in the filtered set, update its PCA coordinates in the dataset. */
+          for(var i=0; i<pcaProjData.length; i++){
+            var id = pcaRecIDs[i];
+            dataset[id].pcaCoords.c1 = pcaProjData[i][0];
+            dataset[id].pcaCoords.c2 = pcaProjData[i][1];
+          }
+          /* Redefine the pca dimension and group to incorporate the newly computed values. */
+          pcaDim=ndx.dimension(pcaAccessor);
+          pcaGroup=pcaDim.group();
+          /* Finally, replace the scatterplot's dimension and group with the new ones. */
+          scatterplot
+            .dimension(pcaDim).group(pcaGroup)
+            .x(d3.scale.linear().domain([1.1*d3.min(dataset, pcaAccessorC1), 1.1*d3.max(dataset, pcaAccessorC1)]))
+            .y(d3.scale.linear().domain([1.1*d3.min(dataset, pcaAccessorC2), 1.1*d3.max(dataset, pcaAccessorC2)]))
+            .data(dataset.map(function(d){return {key:pcaAccessor(d), value:1};}));
+        };
+        
+        // Call the update function to get the correct PCA coordinates
+        update_pca_coords();
+
+        // Specify a bar chart to demonstrate how the PCA updates based on the filters 
+        var rowDim=ndx.dimension(function(d) {return d["Disease_group"];}),
+            rowgroup=rowDim.group().reduce(
+              function (p, v) {
+                  ++p.count;
+                  p.sum+= +v["Metabolite322"];
+                  p.average = Math.round(p.sum / p.count);
+                  return p;
+              },
+              function (p, v) {
+                  --p.count;
+                  p.sum-= +v["Metabolite322"];
+                  p.average = Math.round(p.sum / p.count);
+                  return p;
+              },
+              function () {
+                  return {
+                      count: 0,
+                      sum: 0,
+                      average: 0
+                  };
+              }
+            );
+        rowChart
+          .width(550).height(250)
+          .dimension(rowDim)
+          .group(rowgroup)
+          .valueAccessor(function(p){return p.value["count"];})
+          .rowsCap(16)
+          .title(function(d) {
+              return "Diseased_group: "+ (d.key) + "\nCount of \"Metabolite322\": "+ ( d.value["count"]);}) 
+          .elasticX(true)
+          .on("filtered", update_pca_coords);  // IMPORTANT: Make sure update_pca gets called on filter updates ***
+
+        /* Redraw the whole screen if needed, otherwise just update the PCA scatterplot using its internal render 
+           function (which causes it to update smoothly when checkboxes are toggled). */
+        if(redrawAll){
+          dc.renderAll();  
+        }
+        scatterplot.redrawGroup();
+      }); 
+    }; 
+    draw_graphs(true);  
+  </script>
+</div></body>
+</html>

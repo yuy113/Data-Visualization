@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>CS590V Final Project Visualization-Interactive Histgoram and Scatterplot on 20 components of Partial Least Square(PLS)</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="https://dc-js.github.io/dc.js/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://dc-js.github.io/dc.js/css/dc.css" />
+  <script src="https://dc-js.github.io/dc.js/js/d3.js"></script>
+  <script src="https://dc-js.github.io/dc.js/js/crossfilter.js"></script>
+  <script src="https://dc-js.github.io/dc.js/js/dc.js"></script>
+  <script src="https://rawgit.com/crossfilter/reductio/master/reductio.js"></script>
+  <script src="https://npmcdn.com/universe@latest/universe.js"></script>
+  <script src="https://www.lactame.com/lib/ml/2.0.0/ml.min.js"></script>
+  
+  <style> .dc-chart g.row text {fill: black;} 
+    #ch1{
+      width:425;
+      height:415px;
+      margin: 1%;
+      padding:0;
+      border:0;
+      align:center;
+      float:left;
+    }
+    #ch2{
+      width:425px;
+      height:415px;
+      margin: 1%;
+      padding:0;
+      border:0;
+      float:left;    
+    }
+    #opt {
+      width: 8em;
+      font-size: 10px;
+      margin: 2px;
+      padding: 0px;
+    }
+    #sec {
+      width: 40%;
+      height:60px;
+      float:left;
+      font-size: 10px;
+    }
+    #annotate{
+      width:100%;
+      font-size:10px;
+      color:black ;
+      overflow:scroll; 
+      height:200px
+    }
+    h1{
+      align:center;
+      color:crimson;
+    }
+    h2{
+      align:center;
+      color:crimson;
+    }
+      h3{
+      align:center;
+      color:crimson;
+    }
+    h5{
+      font-size: 10px;
+      margin: 2px;
+      padding: 0px;      
+    }  
+    .dropdown {
+      border: 1px solid #ccc;
+      width: 12em;
+      font-size: 10px;
+      border-radius: 3px;
+      overflow: visible;
+    }
+    input{
+      width: 4.5em;
+      font-size: 10px;
+    }
+    .form{
+      width:10%;
+    }
+  </style>
+</head>
+
+<body><div class="container" style="width:1000">
+  <div align="center"><h1 style="h1">CS590V Final Project-Interactive Histgoram and Scatterplot Visualization</h1></div>
+  <div align="center"><h2 style="h2">First 20 principal components of sparse Principal Component Analysis(sPCA) between 406 metabolite features and diseased labels</h2></div>
+
+  <script>    
+    var var1="sPCA_Component1";
+    var var2 = "sPCA_Component2";
+    var var3=  "sPCA_Component3";
+    var var4="sPCA_Component4";
+    var var5="sPCA_Component5";
+    var var6="sPCA_Component6" ; 
+    var var7="sPCA_Component7";
+    var var8="sPCA_Component8";
+    var var9="sPCA_Component9";
+    var var10= "sPCA_Component10";
+    var var11="sPCA_Component11";
+    var var12 = "sPCA_Component12";
+    var var13=  "sPCA_Component13";
+    var var14="sPCA_Component14";
+    var var15="sPCA_Component15";
+    var var16="sPCA_Component16" ; 
+    var var17="sPCA_Component17";
+    var var18="sPCA_Component18";
+    var var19="sPCA_Component19";
+    var var20= "sPCA_Component20";
+    var var21='Disease_group';
+    var mydata;
+  </script>    
+      
+  <div>   
+      <div id="ch1">
+      <div align="center"><h3>Pie Chart</h3></div>
+      <div id="sec">
+        <h5>Piechart variable</h5> 
+        <select id="opt1" name="pie_var1"  class="dropdown" onchange="draw_graphs()">
+        <option selected value="Disease_group">Disease_group</option>          
+        </select>
+      </div>
+
+
+      <div id="sec">
+        <h5>Groupby variable</h5> 
+        <select id="opt2" name="pie_var2" class="dropdown" onchange="draw_graphs()">
+          <option   selected value="sPCA_Component1">sPCA_Component1</option>
+          <option  value="sPCA_Component2">sPCA_Component2</option>
+          <option value="sPCA_Component3">sPCA_Component3</option>
+          <option value="sPCA_Component4">sPCA_Component4</option>
+          <option value="sPCA_Component5">sPCA_Component5</option>
+          <option value="sPCA_Component6">sPCA_Component6</option>  
+          <option value="sPCA_Component7">sPCA_Component7</option>  
+          <option value="sPCA_Component8">sPCA_Component8</option>  
+          <option value="sPCA_Component9">sPCA_Component9</option>  
+          <option  value="sPCA_Component10">sPCA_Component10</option> 
+          <option value="sPCA_Component11">sPCA_Component11</option> 
+           <option value="sPCA_Component12">sPCA_Component12</option>
+          <option value="sPCA_Component13">sPCA_Component13</option>
+          <option value="sPCA_Component14">sPCA_Component14</option>
+          <option value="sPCA_Component15">sPCA_Component15</option>
+          <option value="sPCA_Component16">sPCA_Component16</option>  
+          <option value="sPCA_Component17">sPCA_Component17</option>  
+          <option value="sPCA_Component18">sPCA_Component18</option>  
+          <option value="sPCA_Component19">sPCA_Component19</option>  
+          <option  value="sPCA_Component20">sPCA_Component20</option>   
+                
+        </select>
+      </div>  
+      <div id="sec">
+        <h5>Measure option</h5> 
+        <select id="measureoption_pie" name="measure" class="dropdown" onchange="draw_graphs()">
+          <option selected value="count">Count</option>     
+        </select>    
+      </div>     
+      <div id="piechart11"></div>
+      <div id="annotate">
+        <p>The number of subjects are evenly distributed between two diseased classification groups-Diseased and Healthy. <br>Combined with scatterplot below, it seems that the values of principal components are not associated with diseased class labels.</p>
+      </div>
+    </div>  
+       
+    <div id="ch1">
+      <div align="center" ><h3>Scatter Plot </h3></div>
+      <div id="sec">
+        <h5>X Variable</h5> 
+        <select id="opt3" name="scatter_x" class="dropdown" onchange="draw_graphs()">
+          <option   selected value="sPCA_Component1">sPCA_Component1</option>
+          <option  value="sPCA_Component2">sPCA_Component2</option>
+          <option value="sPCA_Component3">sPCA_Component3</option>
+          <option value="sPCA_Component4">sPCA_Component4</option>
+          <option value="sPCA_Component5">sPCA_Component5</option>
+          <option value="sPCA_Component6">sPCA_Component6</option>  
+          <option value="sPCA_Component7">sPCA_Component7</option>  
+          <option value="sPCA_Component8">sPCA_Component8</option>  
+          <option value="sPCA_Component9">sPCA_Component9</option>  
+          <option  value="sPCA_Component10">sPCA_Component10</option> 
+          <option value="sPCA_Component11">sPCA_Component11</option> 
+           <option value="sPCA_Component12">sPCA_Component12</option>
+          <option value="sPCA_Component13">sPCA_Component13</option>
+          <option value="sPCA_Component14">sPCA_Component14</option>
+          <option value="sPCA_Component15">sPCA_Component15</option>
+          <option value="sPCA_Component16">sPCA_Component16</option>  
+          <option value="sPCA_Component17">sPCA_Component17</option>  
+          <option value="sPCA_Component18">sPCA_Component18</option>  
+          <option value="sPCA_Component19">sPCA_Component19</option>  
+          <option  value="sPCA_Component20">sPCA_Component20</option>                 
+        </select>
+      </div>
+      <div id="sec">
+        <h5>Y Variable</h5> 
+        <select id="opt4" name="scatter_y" class="dropdown" onchange="draw_graphs()">
+      <option    value="sPCA_Component1">sPCA_Component1</option>
+          <option  value="sPCA_Component2">sPCA_Component2</option>
+          <option value="sPCA_Component3">sPCA_Component3</option>
+          <option value="sPCA_Component4">sPCA_Component4</option>
+          <option value="sPCA_Component5">sPCA_Component5</option>
+          <option value="sPCA_Component6">sPCA_Component6</option>  
+          <option value="sPCA_Component7">sPCA_Component7</option>  
+          <option value="sPCA_Component8">sPCA_Component8</option>  
+          <option value="sPCA_Component9">sPCA_Component9</option>  
+          <option  value="sPCA_Component10">sPCA_Component10</option> 
+          <option value="sPCA_Component11">sPCA_Component11</option> 
+           <option value="sPCA_Component12">sPCA_Component12</option>
+          <option value="sPCA_Component13">sPCA_Component13</option>
+          <option value="sPCA_Component14">sPCA_Component14</option>
+          <option value="sPCA_Component15">sPCA_Component15</option>
+          <option value="sPCA_Component16">sPCA_Component16</option>  
+          <option value="sPCA_Component17">sPCA_Component17</option>  
+          <option value="sPCA_Component18">sPCA_Component18</option>  
+          <option value="sPCA_Component19">sPCA_Component19</option>  
+          <option  selected value="sPCA_Component20">sPCA_Component20</option>       
+        </select>
+      </div>
+      <div id="scatter11"></div>
+      <div id="annotate">
+        <p>Most sPCA components appears to have little correlation. It appears that no clear clustering patterns exists in two classification groups for any two of 20 sPCA components.</p>
+      </div>
+    </div>  
+           <br><br>
+    <div id="ch2">
+      <div align="center"><h2>Histogram of X variable in the scatterplot</h2></div>
+      <div id="sec">
+        <h5>Histogram variable</h5> 
+        <select id="opt5" name="bar_var1" class="dropdown" onchange="draw_graphs()">
+          <option   selected value="sPCA_Component1">sPCA_Component1</option>
+          <option  value="sPCA_Component2">sPCA_Component2</option>
+          <option value="sPCA_Component3">sPCA_Component3</option>
+          <option value="sPCA_Component4">sPCA_Component4</option>
+          <option value="sPCA_Component5">sPCA_Component5</option>
+          <option value="sPCA_Component6">sPCA_Component6</option>  
+          <option value="sPCA_Component7">sPCA_Component7</option>  
+          <option value="sPCA_Component8">sPCA_Component8</option>  
+          <option value="sPCA_Component9">sPCA_Component9</option>  
+          <option  value="sPCA_Component10">sPCA_Component10</option> 
+          <option value="sPCA_Component11">sPCA_Component11</option> 
+           <option value="sPCA_Component12">sPCA_Component12</option>
+          <option value="sPCA_Component13">sPCA_Component13</option>
+          <option value="sPCA_Component14">sPCA_Component14</option>
+          <option value="sPCA_Component15">sPCA_Component15</option>
+          <option value="sPCA_Component16">sPCA_Component16</option>  
+          <option value="sPCA_Component17">sPCA_Component17</option>  
+          <option value="sPCA_Component18">sPCA_Component18</option>  
+          <option value="sPCA_Component19">sPCA_Component19</option>  
+          <option  value="sPCA_Component20">sPCA_Component20</option>            
+        </select>
+      </div>
+      <div id="sec">
+        <h5>Bin Width</h5> 
+        <form  name="bar_var1" class="form"  method="get">
+          <input id="opt6" type="number" name="number" value=1 onchange="draw_graphs()"> 
+        </form>     
+      </div>
+      <div id="hist11"></div>
+      <div id="annotate">
+        <p> The distributions of first 10 sPCA components are mostly not regular and some of them are bimodal such as sPCA component2,9.</p>
+      </div>    
+    </div>   
+
+ <div id="ch2">
+      <div align="center"><h3>Histogram of Y variable in the scatterplot</h3></div>
+      <div id="sec">
+        <h5>Histogram variable</h5> 
+        <select id="opt51" name="bar_var2" class="dropdown" onchange="draw_graphs()">
+          <option   value="sPCA_Component1">sPCA_Component1</option>
+          <option  value="sPCA_Component2">sPCA_Component2</option>
+          <option value="sPCA_Component3">sPCA_Component3</option>
+          <option value="sPCA_Component4">sPCA_Component4</option>
+          <option value="sPCA_Component5">sPCA_Component5</option>
+          <option value="sPCA_Component6">sPCA_Component6</option>  
+          <option value="sPCA_Component7">sPCA_Component7</option>  
+          <option value="sPCA_Component8">sPCA_Component8</option>  
+          <option value="sPCA_Component9">sPCA_Component9</option>  
+          <option  value="sPCA_Component10">sPCA_Component10</option> 
+          <option value="sPCA_Component11">sPCA_Component11</option> 
+           <option value="sPCA_Component12">sPCA_Component12</option>
+          <option value="sPCA_Component13">sPCA_Component13</option>
+          <option value="sPCA_Component14">sPCA_Component14</option>
+          <option value="sPCA_Component15">sPCA_Component15</option>
+          <option value="sPCA_Component16">sPCA_Component16</option>  
+          <option value="sPCA_Component17">sPCA_Component17</option>  
+          <option value="sPCA_Component18">sPCA_Component18</option>  
+          <option value="sPCA_Component19">sPCA_Component19</option>  
+          <option  selected value="sPCA_Component20">sPCA_Component20</option>             
+        </select>
+      </div>
+      <div id="sec">
+        <h5>Bin Width</h5> 
+        <form  name="bar_var2" class="form"  method="get">
+          <input id="opt6" type="number" name="number" value=1 onchange="draw_graphs()"> 
+        </form>     
+      </div>
+      <div id="hist12"></div>
+      <div id="annotate">
+        <p> The distributions of second 10 sPCA components are mostly not regular; some of them are left skewed such as sPCA component 11,14,17.</p>
+      </div>    
+    </div>   
+  </div>    
+
+  <script type="text/javascript">    
+    var var1="sPCA_Component1";
+    var var2 = "sPCA_Component2";
+    var var3=  "sPCA_Component3";
+    var var4="sPCA_Component4";
+    var var5="sPCA_Component5";
+    var var6="sPCA_Component6" ; 
+    var var7="sPCA_Component7";
+    var var8="sPCA_Component8";
+    var var9="sPCA_Component9";
+    var var10= "sPCA_Component10";
+    var var11="sPCA_Component11";
+    var var12 = "sPCA_Component12";
+    var var13=  "sPCA_Component13";
+    var var14="sPCA_Component14";
+    var var15="sPCA_Component15";
+    var var16="sPCA_Component16" ; 
+    var var17="sPCA_Component17";
+    var var18="sPCA_Component18";
+    var var19="sPCA_Component19";
+    var var20= "sPCA_Component20";
+    var var21='Disease_group';
+    var mydata; 
+    var pie_var2=document.getElementById("opt2").value;   
+    //var pie_var2=document.getElementById("opt2").value  
+      
+      
+    function draw_graphs(){
+      d3.csv("sPCA_20components_diseasegroup.csv", function(dataset) {
+        dataset.forEach(function(d) {
+          d[var1]=+d[var1];
+          d[var2]=+d[var2];
+          d[var3]=+d[var3];
+          d[var4]=+d[var4];
+          d[var5]=+d[var5];
+          d[var6]=+d[var6];
+          d[var7]=+d[var7];
+          d[var8]=+d[var8];
+          d[var9]=+d[var9];
+          d[var10]=+d[var10];
+          d[var11]=+d[var11];
+          d[var12]=+d[var12];
+          d[var13]=+d[var13];
+          d[var14]=+d[var14];
+          d[var15]=+d[var15];
+          d[var16]=+d[var16];
+          d[var17]=+d[var17];
+          d[var18]=+d[var18];
+          d[var19]=+d[var19];
+          d[var20]=+d[var20];
+        }); // parsedata
+          
+
+        function remove_empty_bins(source_group) {
+          return {
+              all:function () {
+                  return source_group.all().filter(
+                    function(d) { return d.value != 0;});
+              }};
+        }    
+
+        // define dc charts
+        var pieChart   = dc.pieChart("#piechart11"),
+            histChart1  = dc.barChart("#hist11"),
+            histChart2  = dc.barChart("#hist12"),
+
+            //rowChart = dc.rowChart("#hist21"),
+            scatterplot=dc.scatterPlot("#scatter11");
+            //heatmapChart = dc.heatMap("#heatmap11"),
+            //lineChart=dc.seriesChart("#line11");
+
+        var pie_var1=document.getElementById("opt1").value,
+            pie_var2=document.getElementById("opt2").value,
+            measure_pie=document.getElementById("measureoption_pie").value,
+            scatter_x=document.getElementById("opt3").value,
+            scatter_y=document.getElementById("opt4").value,
+            bar_var1=document.getElementById("opt5").value,
+            bar_var2=document.getElementById("opt51").value;
+           // row_var1 = document.getElementById("opt7").value, 
+            //row_var2=document.getElementById("opt8").value,
+           // measure_row=document.getElementById("measureoption_row").value,
+           // heat_var1 = document.getElementById("opt9").value, 
+           // heat_var2=document.getElementById("opt10").value,
+           // heat_var3=document.getElementById("opt11").value,
+           // measure_heat=document.getElementById("measureoption_heat").value,
+           // line_var1 = document.getElementById("opt12").value, 
+           // line_var2=document.getElementById("opt13").value,
+           // line_var3=document.getElementById("opt14").value,
+            //measure_line=document.getElementById("measureoption_line").value;
+                
+        var binwidth=+document.getElementById("opt6").value;    
+            
+        var ndx = crossfilter(dataset),
+            pieDim  = ndx.dimension(function(d) {return d[pie_var1];}),
+            histDim1 = ndx.dimension(function(d) {return Math.floor(d[bar_var1]);}),
+            histDim2 = ndx.dimension(function(d) {return Math.floor(d[bar_var2]);}),
+            //rowDim  = ndx.dimension(function(d) {return d[row_var1];}),
+            scatterDim=ndx.dimension(function(d){return [+d[scatter_x],+d[scatter_y]];}),
+           // heatDim=ndx.dimension(function(d){return[d[heat_var1],d[heat_var2]];}),
+           // lineDim=ndx.dimension(function(d){return[d[line_var3],+d[line_var1]];}),
+            scattergroup=scatterDim.group(),
+            scattergroup1=remove_empty_bins(scattergroup);
+            //linegroup=lineDim.group().reduceSum(function(d) { return +d[line_var2]; });
+      
+        
+    
+        var histrange1=d3.extent(dataset,function(d){return +d[bar_var1];});    
+        var histDim1 = ndx.dimension(function(d) {
+          // Threshold
+          var threshold = d[bar_var1];
+          if (threshold <= histrange1[0]) threshold = histrange1[0];
+          if (threshold >= histrange1[1]) threshold = histrange1[1] - binwidth;
+          return binwidth * Math.floor(threshold / binwidth);
+        });
+        var histgroup1 = histDim1.group();     
+      
+        var histrange2=d3.extent(dataset,function(d){return +d[bar_var2];});    
+        var histDim2= ndx.dimension(function(d) {
+          // Threshold
+          var threshold = d[bar_var2];
+          if (threshold <= histrange2[0]) threshold = histrange2[0];
+          if (threshold >= histrange2[1]) threshold = histrange2[1] - binwidth;
+          return binwidth * Math.floor(threshold / binwidth);
+        });
+        var histgroup2 = histDim2.group();     
+        
+        var piegroup=pieDim.group().reduce(
+          /* callback for when data is added to the current filter results */
+          function (p, v) {
+              ++p.count;
+              p.sum+= +v[pie_var2];
+              p.average = Math.round(p.sum / p.count);
+              return p;
+          },
+          /* callback for when data is removed from the current filter results */
+          function (p, v) {
+              --p.count;
+            p.sum-= +v[pie_var2];
+            p.average = Math.round(p.sum / p.count);
+              return p;
+          },
+          /* initialize p */
+          function () {
+              return {
+                  count: 0,
+                 sum: 0,
+                 average: 0
+              };
+          }
+        ); 
+
+     pieChart
+          .width(300).height(200)
+          .dimension(pieDim)
+          .group(piegroup)
+          .valueAccessor(function(p){return p.value[measure_pie];})
+          .legend(dc.legend())
+          .title(function(d) {
+              return pie_var1 +": "+ (d.key) + "\n" +
+                     measure_pie+ " of "+pie_var2 +": "+ ( d.value[measure_pie]);})
+          .innerRadius(50);   
+      
+        
+        histChart1
+          .width(300).height(200)
+          .dimension(histDim1)
+          .group(histgroup1)
+          .yAxisLabel("Frequency")
+          .xAxisLabel(bar_var1)
+          .x(d3.scale.linear().domain(d3.extent(dataset,function(d){return +d[bar_var1];})))
+          .centerBar(false)
+          .xUnits(dc.units.fp.precision(binwidth))
+          .elasticX(true)
+          .elasticY(true);
+        histChart1.xAxis().tickFormat(d3.format("r"));
+        histChart1.yAxis().ticks(10); 
+
+        histChart2
+          .width(300).height(200)
+          .dimension(histDim2)
+          .group(histgroup2)
+          .yAxisLabel("Frequency")
+          .xAxisLabel(bar_var2)
+          .x(d3.scale.linear().domain(d3.extent(dataset,function(d){return +d[bar_var2];})))
+          .centerBar(false)
+          .xUnits(dc.units.fp.precision(binwidth))
+          .elasticX(true)
+          .elasticY(true);
+        histChart2.xAxis().tickFormat(d3.format("r"));
+        histChart2.yAxis().ticks(10);   
+      /*
+        rowChart
+          .width(500).height(200)
+          .dimension(rowDim)
+          .group(rowgroup)
+          .valueAccessor(function(p){return p.value[measure_row];})
+          .rowsCap(16)
+          .title(function(d) {
+              return row_var1 +": "+ (d.key) + "\n " +
+                     measure_row+ " of "+row_var2 +": "+ ( d.value[measure_row]);}) 
+          .elasticX(true);
+        */
+        scatterplot
+          .width(800)
+          .height(250)
+          .x(d3.scale.linear().domain( [1.1*d3.min(dataset, function(d) { return d[scatter_x]; }), 1.1*d3.max(dataset, function(d) { return d[scatter_x]; })]  ))
+          .y(d3.scale.linear().domain( [1.1*d3.min(dataset, function(d) { return d[scatter_y]; }), 1.1*d3.max(dataset, function(d) { return d[scatter_y]; })]  ))
+          .yAxisLabel(scatter_y)
+          .xAxisLabel(scatter_x)
+          .clipPadding(10)
+          .dimension(scatterDim)
+          .excludedOpacity(0.5)
+          .group(scattergroup)
+          .margins().left += 20; 
+        scatterplot.yAxis().tickFormat(d3.format("r"));
+        scatterplot.xAxis().tickFormat(d3.format("r")) ;   
+     /* 
+        heatmapChart    
+          .width(300)
+          .height(200)
+          .dimension(heatDim)
+          .group(heatgroup)
+          .keyAccessor(function(d) { return +d.key[0]; })
+          .valueAccessor(function(d) { return d.key[1]; })
+          .colorAccessor(function(d) { return +d.value[measure_heat]; })
+          .title(function(d) { 
+              return heat_var1 +": "+ d.key[0] + "\n" +
+                     heat_var2 + ": "+ d.key[1] + "\n" +
+                     heat_var3 +": "+ ( d.value[measure_heat]);})
+          .colors(d3.scale.linear().domain([d3.min(heatmapChart.data(),heatmapChart.colorAccessor()),d3.max(heatmapChart.data(),heatmapChart.colorAccessor())]).range(['beige', 'red']))
+          .legend(dc.legend()); 
+        heatmapChart.xBorderRadius(0);
+        heatmapChart.yBorderRadius(0);  
+        var myvar1=function(d) { return Math.min(+d.value[measure_heat]); };
+      
+        lineChart
+          .width(500)
+          .height(200)
+          .chart(function(c) { return dc.lineChart(c).interpolate('linear'); })
+          .x(d3.scale.ordinal())
+          .xUnits(dc.units.ordinal)
+          .yAxisLabel(line_var2)
+          .xAxisLabel(line_var1)
+          .ordering(function(d){return +d.key[1];})
+          .elasticY(true)
+          .dimension(lineDim)
+          .group(linegroup)
+          .seriesAccessor(function(d) {return  d.key[0];})
+          .keyAccessor(function(d) {return  d.key[1]})
+          .valueAccessor(function(d) {return +d.value[measure_line] ;})
+          .renderHorizontalGridLines(true)
+          .legend(dc.legend().x(300).y(0).itemHeight(10).gap(3).horizontal(2).legendWidth(140).itemWidth(40));
+        lineChart.yAxis().tickFormat(function(d) {return d});
+        lineChart.margins().left += 20;
+        lineChart.yAxis().tickFormat(d3.format("s"));
+        lineChart.xAxis().tickFormat(d3.format("s"));  
+*/
+        // Render everything
+        dc.renderAll();    
+      }); 
+    };
+      
+    draw_graphs();  
+  </script>
+</div></body>
+</html>
