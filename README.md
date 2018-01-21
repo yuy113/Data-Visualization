@@ -32,10 +32,10 @@ The R code file for both data preprocessing and imputation and the analysis resu
 
 RadViz visualization will be used to explore the association patterns among all normalized imputed 406 metabolite features in all the observations, and in diseased and healthy groups. Identify several strong association groups of metabolite features from 20 metabolite features with lowest paired t test P values(the data combined with diseased group labels saved in \url{feature_20lowestpvalue_diseasegroup.csv}) or associated components from first 20 components in PLS method (the data combined with diseased group labels saved in \url{PLS_20components_diseasegroup.csv}), and associated principal components from first 20 principal components in sPCA method (the data combined with diseased group labels saved in \url{sPCA_20components_diseasegroup.csv}), by RadVis visualization.
 
-The RadViz visualization on 20 metabolite features with lowest paired t test P values across diseased and healthy groups are shown in the webpage-\url{http://www-edlab.cs.umass.edu/~yyao/Radviz_feature_20lowestpvalue.html}
+The RadViz visualization on 20 metabolite features with lowest paired t test P values across diseased and healthy groups are shown in the webpage-http://www-edlab.cs.umass.edu/~yyao/Radviz_feature_20lowestpvalue.html
 
 
-The RadViz visualization on first 20 components in Partial Least Square(PLS) method across diseased and healthy groups are shown in the webpage-\url{http://www-edlab.cs.umass.edu/~yyao/Radviz_20components_pls.html}
+The RadViz visualization on first 20 components in Partial Least Square(PLS) method across diseased and healthy groups are shown in the webpage-http://www-edlab.cs.umass.edu/~yyao/Radviz_20components_pls.html
 
 
 The RadViz visualization on first 20 principal components in sparse principal component analysis (sPCA) method across diseased and healthy groups are shown in the webpage-\url{http://www-edlab.cs.umass.edu/~yyao/Radviz_20components_sPCA.html}
