@@ -18,7 +18,7 @@ Assume that the values of each 33 metabolite feature with percentage of 0 values
 
 ## Computation and Exploratory Data Analysis
 
-The 406 imputed metabolite features will be firstly log transformed and then normalize by subtracting their means divided by corresponding standard deviations. The dimensional reduction techinques will be applied to reduce the size of features for the data with more features(406) than number of observations(136) such as sparse principal component analysis (sPCA), t-SNE technique, Partial Least Square(PLS) etc. t-SNE analysis is performed on Python Scikit-learn manifold TSNE function(\url{http://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html}). The outputs from t-SNE are either tightly clustered together or very sparse distributed without separation across diseased and healthy groups by tuning the values of two parameters in TSNE function-perplexity and learning rate. Thus the results from t-SNE will not shown in the webpages.
+The 406 imputed metabolite features will be firstly log transformed and then normalize by subtracting their means divided by corresponding standard deviations. The dimensional reduction techinques will be applied to reduce the size of features for the data with more features(406) than number of observations(136) such as sparse principal component analysis (sPCA), t-SNE technique, Partial Least Square(PLS) etc. t-SNE analysis is performed on Python Scikit-learn manifold TSNE function(http://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html). The outputs from t-SNE are either tightly clustered together or very sparse distributed without separation across diseased and healthy groups by tuning the values of two parameters in TSNE function-perplexity and learning rate. Thus the results from t-SNE will not shown in the webpages.
 
 The first 20 principal components from sparse PCA analysis on all 406 imputed normalized metabolite features are saved and run data visualzation in RadViz and interactive visualization between scatterplot and Histograms on any two of these 20 principal components across diseased and healthy groups. Similary the first 20 components from PLS analysis will also saved and are presented in RadViz plot and interactive visualization between Scatterplot and Histograms on any two of these 20 principal components across diseased and healthy groups.
 
@@ -38,10 +38,10 @@ The RadViz visualization on 20 metabolite features with lowest paired t test P v
 The RadViz visualization on first 20 components in Partial Least Square(PLS) method across diseased and healthy groups are shown in the webpage-http://www-edlab.cs.umass.edu/~yyao/Radviz_20components_pls.html
 
 
-The RadViz visualization on first 20 principal components in sparse principal component analysis (sPCA) method across diseased and healthy groups are shown in the webpage-\url{http://www-edlab.cs.umass.edu/~yyao/Radviz_20components_sPCA.html}
+The RadViz visualization on first 20 principal components in sparse principal component analysis (sPCA) method across diseased and healthy groups are shown in the webpage-http://www-edlab.cs.umass.edu/~yyao/Radviz_20components_sPCA.html
 
 
-Association and clustering patterns among 20 metabolite features with lowest paired t test p values will be presented by parallel coordinates. This visualization is presented in the webpage--\url{http://www-edlab.cs.umass.edu/~yyao/parallel_20features_ttest.html}.
+Association and clustering patterns among 20 metabolite features with lowest paired t test p values will be presented by parallel coordinates. This visualization is presented in the webpage--http://www-edlab.cs.umass.edu/~yyao/parallel_20features_ttest.html.
 
 
 The interactive techniques in this parallel coordinate visualization include selection of lines and moving the 20 axises of metabolite features in order to explore the details of any clustering and association patterns among selected 20 metabolite features.
@@ -50,12 +50,12 @@ The interactive techniques in this parallel coordinate visualization include sel
 The interactive scatterplot and histograms of two variables in the scatterplot and also piechart of numbers of subjects in both diseased and healthy groups will be presented to explore the distributions and associations among either metabolite features or principal components from sPCA method or components from PLS method, and their association with diseased labels.
 
 
-The interactive scatterplot and two histograms and piechart for 20 metabolite features with lowest paired t test P values across diseased and healthy groups is shown in the webpage-\url{http://www-edlab.cs.umass.edu/~yyao/hist_scatter_20features_ttest.html}.
+The interactive scatterplot and two histograms and piechart for 20 metabolite features with lowest paired t test P values across diseased and healthy groups is shown in the webpage-http://www-edlab.cs.umass.edu/~yyao/hist_scatter_20features_ttest.html.
 
-The interactive scatterplot and two histograms and piechart for first 20 components in Partial Least Square(PLS) method across diseased and healthy groups is shown in the webpage-\url{http://www-edlab.cs.umass.edu/~yyao/hist_scatter_20components_pls.html}.
+The interactive scatterplot and two histograms and piechart for first 20 components in Partial Least Square(PLS) method across diseased and healthy groups is shown in the webpage-http://www-edlab.cs.umass.edu/~yyao/hist_scatter_20components_pls.html.
 
 
-The interactive scatterplot and two histograms and piechart for first 20 principal components in sparse principal component analysis (sPCA) method across diseased and healthy groups is shown in the webpage-\url{http://www-edlab.cs.umass.edu/~yyao/hist_scatter_20components_sPCA.html}.
+The interactive scatterplot and two histograms and piechart for first 20 principal components in sparse principal component analysis (sPCA) method across diseased and healthy groups is shown in the webpage-http://www-edlab.cs.umass.edu/~yyao/hist_scatter_20components_sPCA.html.
 
 
 
